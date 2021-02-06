@@ -40,13 +40,46 @@ def make_map(columnslist):
                     break
                 else:
                     continue
-    print(ordermap)            
+    print("map : " + str(ordermap))        
     return ordermap
+
+def get_static_data(pid, columnslist):
+    data = {pid:{}} 
+
+    for targetdir in columnsmap.keys():
+        location = "/proc/"+pid+"/"
+        location += targetdir # set target location	
+	# get data
+        result = os.popen("cat "+location).read()
+
+        if targetdir == "status":
+	    result = result.replace("\t","").split("\n")
+            for index,val in enumerate(result):
+                result[index] = val.split(":")
+            for column in columnsmap[targetdir]:
+                for item in result: # ex) ["Ppid","4232"]
+                    if column == "CMD1": # CMD1 == Name
+                        if "NAME" == item[0].upper():
+                            data[pid][column] = item[1]
+                            continue
+                    if column == item[0].upper():
+                        data[pid][column] = item[1]
+        elif targetdir == "cmdline":
+            data[pid]["CMD2"] = result.replace("\x00","")
+    print(data)
+    return data
+
 
 def start_parsing(targetlist, columnslist, pidlist):
     # make map
     ordermap = make_map(columnslist)
-    # start parsing by ordermap
+    # start parsing by pid
+    row = {}
+    for pid in pidlist:
+	# get static data
+	row.update(get_static_data(pid, columnslist))
+    # get dinamic data  ex) cpu usage
+    print(row)
     
         
    
