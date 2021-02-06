@@ -1,0 +1,4 @@
+,CMD1,CMD2,PID,PPID
+0,nginx,nginx: worker process,20425,20423
+1,nginx,nginx: worker process,20424,20423
+2,nginx,nginx: master process /usr/sbin/nginx -g daemon on; master_process on;,20423,1

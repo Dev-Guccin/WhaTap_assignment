@@ -1,3 +1,4 @@
+import pandas as pd
 import os
 
 columnsmap = {"status":["PID","PPID","CMD1"],"cmdline":["CMD2"]}
@@ -74,13 +75,26 @@ def start_parsing(targetlist, columnslist, pidlist):
     # make map
     ordermap = make_map(columnslist)
     # start parsing by pid
-    row = {}
+    rows = {}
     for pid in pidlist:
 	# get static data
-	row.update(get_static_data(pid, columnslist))
+	rows.update(get_static_data(pid, columnslist))
     # get dinamic data  ex) cpu usage
-    print(row)
+    print(rows)
     
+    # Fit order with columnlist
+    total = []
+    for key in rows:
+        tmp = [0]*len(rows[key])
+        print(rows[key])
+        print(tmp)
+        for column in rows[key]:
+            index = columnslist.index(column) 
+            tmp[index] = rows[key][column]
+        total.append(tmp)
+    t = pd.DataFrame(total, columns=columnslist, index=None)
+    print(t)
+    t.to_csv("static.csv")
         
    
 if __name__ == '__main__':
