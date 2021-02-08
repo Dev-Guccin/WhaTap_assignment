@@ -1,4 +1,5 @@
 import pandas as pd
+import time
 import os
 
 columnsmap = {"status":["PID","PPID","CMD1"],"cmdline":["CMD2"]}
@@ -92,6 +93,10 @@ def start_parsing(targetlist, columnslist, pidlist):
             index = columnslist.index(column) 
             tmp[index] = rows[key][column]
         total.append(tmp)
+    
+    columnslist.insert(0,"TIME")
+    for row in total:
+        row.insert(0,int(time.time()))
     t = pd.DataFrame(total, columns=columnslist, index=None)
     print(t)
     t.to_csv("static.csv")
